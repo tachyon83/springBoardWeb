@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+	
+	<!-- <bean id="SamsungTv" class="polymorphism.SamsungTV" scope="prototype"></bean> -->
+	
+	<!-- <context:component-scan base-package="polymorphism"></context:component-scan> -->
+	<context:component-scan base-package="com.springbook.biz"></context:component-scan>
+	
+	<!-- <bean id="log" class="com.springbook.biz.common.LogAdvice"></bean>
+	<bean id="log2" class="com.springbook.biz.common.Log4jAdvice"></bean>
+	<bean id="afterReturnLog" class="com.springbook.biz.common.AfterReturningAdvice" scope="prototype"></bean>
+	<bean id="afterThrowLog" class="com.springbook.biz.common.AfterThrowingAdvice"></bean>
+	<bean id="aroundLog" class="com.springbook.biz.common.AroundAdvice"></bean>
+	
+	<aop:config>
+		<aop:pointcut id="allPointcut" expression="execution(* com.springbook.biz..*Impl.*(..))"></aop:pointcut>
+		<aop:pointcut id="getPointcut" expression="execution(* com.springbook.biz..*Impl.get*(..))"></aop:pointcut>
+		<aop:aspect ref="log2">
+			<aop:before pointcut-ref="allPointcut" method="printLogging"></aop:before>
+		</aop:aspect>
+		<aop:aspect ref="log">
+			<aop:before pointcut-ref="getPointcut" method="printLog"></aop:before>
+		</aop:aspect>
+		
+		<aop:aspect ref="afterReturnLog">
+			<aop:after-returning pointcut-ref="getPointcut" method="returnLog" returning="returnObj"></aop:after-returning>
+		</aop:aspect>
+		<aop:aspect ref="afterThrowLog">
+			<aop:after-throwing pointcut-ref="allPointcut" method="exceptionLog" throwing="exceptObj"></aop:after-throwing>
+		</aop:aspect>
+		
+		<aop:aspect ref="aroundLog">
+			<aop:around pointcut-ref="getPointcut" method="aroundLog"></aop:around>
+		</aop:aspect>
+	</aop:config> -->
+	
+	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+	
+	<!-- DataSource 설정 -->
+	<context:property-placeholder location="classpath:config/database.properties"/>
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driver}"></property>
+		<property name="url" value="${jdbc.url}"></property>
+		<property name="username" value="${jdbc.username}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+	</bean>
+	
+	<!-- Transaction 설정 -->
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<!-- 트랜잭션 관리 기능의 어드바이스 객체를 메모리에 생성 -->
+	<!-- id는 확인되지만 메소드 이름은 확인할 방법이 없다 -->
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true"/>
+			<tx:method name="*"/>
+		</tx:attributes>
+	</tx:advice>
+	
+	<aop:config>
+		<aop:pointcut id="txPointcut" expression="execution(* com.springbook.biz..*(..))"></aop:pointcut>
+		<aop:advisor pointcut-ref="txPointcut" advice-ref="txAdvice"></aop:advisor>
+	</aop:config>
+	
+	<!-- Spring-JDBC 설정 + 의존성 주입 -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<!-- <bean id="userService" class="com.springbook.biz.user.impl.UserServiceImpl">
+		<property name="userDAO" ref="userDAO"></property>
+	</bean>
+	
+	<bean id="userDAO" class="com.springbook.biz.user.impl.UserDAO">
+	</bean> -->
+	
+	<!-- 
+	<bean id="SamsungTv" class="polymorphism.SamsungTV" init-method="initMethod" scope="singleton">
+		<constructor-arg value="3000"></constructor-arg>
+	</bean>
+	<bean id="LgTv" class="polymorphism.LgTV"></bean>
+	-->
+	<!-- <bean class="polymorphism.SonySpeaker"></bean> -->
+
+</beans>

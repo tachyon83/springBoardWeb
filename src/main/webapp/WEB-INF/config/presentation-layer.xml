@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd 
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.2.xsd  
+	">
+	
+	
+	<!-- xmlns:context and context(2 lines) in schemaLocation are required to use annotations in spring mvc -->
+	<!-- xmlns:context="http://www.springframework.org/schema/context" -->
+	
+	
+	<!-- 
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/mvc 
+	http://www.springframework.org/schema/mvc/spring-mvc.xsd
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/context/spring-context.xsd
+	" 
+	-->
+	
+	<!-- xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context" -->
+	
+	<!-- <mvc:annotation-driven /> -->
+	
+	<!-- handlerMapping, controllerRegistration, viewResolver : all three beans are replaced -->
+	<!-- by 'component-scan' below -->
+	<!-- <context:component-scan base-package="com.springbook.view"></context:component-scan> -->
+	
+	
+	<!-- handlerMapping -->
+	<!-- <bean name="/login.do" class="com.springbook.view.user.LoginController"/> -->
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<props>
+				<prop key="/login.do">login</prop>
+				<prop key="/getBoardList.do">getBoardList</prop>
+				<prop key="/getBoard.do">getBoard</prop>
+				<prop key="/insertBoard.do">insertBoard</prop>
+				<prop key="/updateBoard.do">updateBoard</prop>
+				<prop key="/deleteBoard.do">deleteBoard</prop>
+				<prop key="/logout.do">logout</prop>
+			</props>
+		</property>
+	</bean>
+	
+	
+	<!-- handlerAdapter -->
+	<!-- <bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter"></bean>
+	<bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter" />
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/> -->
+	
+	<!-- <bean class="org.springframework.web.servlet.handler.SimpleServletHandlerAdapter"></bean>
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"></bean> -->
+	
+	<!-- controller registration -->
+	<bean id="login" class="com.springbook.view.user.LoginController"></bean>
+	<bean id="getBoardList" class="com.springbook.view.board.GetBoardListController"></bean>
+	<bean id="getBoard" class="com.springbook.view.board.GetBoardController"></bean>
+	<bean id="insertBoard" class="com.springbook.view.board.InsertBoardController"></bean>
+	<bean id="updateBoard" class="com.springbook.view.board.UpdateBoardController"></bean>
+	<bean id="deleteBoard" class="com.springbook.view.board.DeleteBoardController"></bean>
+	<bean id="logout" class="com.springbook.view.user.LogoutController"></bean>
+
+	<!-- ViewResolver registration -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/board/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+	
+</beans>
